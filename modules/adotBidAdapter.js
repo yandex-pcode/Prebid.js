@@ -5,6 +5,7 @@ import {isStr, isFn, isArray, isPlainObject, isBoolean, logError, replaceAuction
 import find from 'core-js-pure/features/array/find.js';
 import { config } from '../src/config.js';
 import { OUTSTREAM } from '../src/video.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const BIDDER_CODE = 'adot';
 const ADAPTER_VERSION = 'v2.0.0';
@@ -378,6 +379,8 @@ function splitAdUnits(validBidRequests) {
  * @returns {Array<AjaxRequest>}
  */
 function buildRequests(validBidRequests, bidderRequest) {
+  // convert Native ORTB definition to old-style prebid native definition
+  validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
   const adUnits = splitAdUnits(validBidRequests);
   const publisherPathConfig = config.getConfig('adot.publisherPath');
   const publisherPath = publisherPathConfig === undefined ? '' : '/' + publisherPathConfig;

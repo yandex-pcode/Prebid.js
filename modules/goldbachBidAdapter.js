@@ -30,6 +30,7 @@ import { auctionManager } from '../src/auctionManager.js';
 import find from 'core-js-pure/features/array/find.js';
 import includes from 'core-js-pure/features/array/includes.js';
 import { OUTSTREAM, INSTREAM } from '../src/video.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const BIDDER_CODE = 'goldbach';
 const URL = 'https://ib.adnxs.com/ut/v3/prebid';
@@ -111,6 +112,9 @@ export const spec = {
    * @return ServerRequest Info describing the request to the server.
    */
   buildRequests: function (bidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    bidRequests = convertOrtbRequestToProprietaryNative(bidRequests);
+
     let localBidRequests = [];
     bidRequests.forEach(bid => {
       if (Array.isArray(bid.params.placementId)) {

@@ -1,5 +1,6 @@
 import { BANNER, NATIVE } from '../src/mediaTypes.js';
 import { createTrackPixelHtml } from '../src/utils.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const {
   registerBidder
@@ -128,6 +129,9 @@ export const spec = {
   },
 
   buildRequests: function (validBidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
+
     if (!validBidRequests) {
       return [];
     }

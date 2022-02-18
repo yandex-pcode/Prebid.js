@@ -4,6 +4,7 @@ import find from 'core-js-pure/features/array/find.js'
 import { VIDEO, BANNER, NATIVE } from '../src/mediaTypes.js'
 import { Renderer } from '../src/Renderer.js'
 import { config } from '../src/config.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const ENDPOINT = 'https://ad.yieldlab.net'
 const BIDDER_CODE = 'yieldlab'
@@ -30,6 +31,9 @@ export const spec = {
    * @returns {{method: string, url: string}}
    */
   buildRequests: function (validBidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
+
     const adslotIds = []
     const timestamp = Date.now()
     const query = {

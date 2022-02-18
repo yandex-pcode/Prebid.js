@@ -5,6 +5,7 @@ import { BANNER, NATIVE, VIDEO } from '../src/mediaTypes.js';
 import {Renderer} from '../src/Renderer.js';
 import { createEidsArray } from './userId/eids.js';
 import includes from 'core-js-pure/features/array/includes.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const BIDDER_CODE = 'improvedigital';
 const RENDERER_URL = 'https://acdn.adnxs.com/video/outstream/ANOutstreamVideo.js';
@@ -34,6 +35,9 @@ export const spec = {
    * @return ServerRequest Info describing the request to the server.
    */
   buildRequests: function (bidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    bidRequests = convertOrtbRequestToProprietaryNative(bidRequests);
+
     let normalizedBids = bidRequests.map((bidRequest) => {
       return getNormalizedBidRequest(bidRequest);
     });

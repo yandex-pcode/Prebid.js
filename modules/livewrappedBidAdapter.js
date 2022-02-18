@@ -4,6 +4,7 @@ import { config } from '../src/config.js';
 import find from 'core-js-pure/features/array/find.js';
 import { BANNER, NATIVE, VIDEO } from '../src/mediaTypes.js';
 import { getStorageManager } from '../src/storageManager.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 export const storage = getStorageManager();
 
@@ -47,6 +48,9 @@ export const spec = {
    * @return ServerRequest Info describing the request to the server.
    */
   buildRequests: function(bidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    bidRequests = convertOrtbRequestToProprietaryNative(bidRequests);
+
     const userId = find(bidRequests, hasUserId);
     const pubcid = find(bidRequests, hasPubcid);
     const publisherId = find(bidRequests, hasPublisherId);

@@ -2,6 +2,7 @@ import { logError, replaceAuctionPrice, parseUrl } from '../src/utils.js';
 import { registerBidder } from '../src/adapters/bidderFactory.js';
 import { config } from '../src/config.js';
 import { NATIVE } from '../src/mediaTypes.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 export const ENDPOINT = 'https://app.readpeak.com/header/prebid';
 
@@ -25,6 +26,9 @@ export const spec = {
     !!(bid && bid.params && bid.params.publisherId && bid.nativeParams),
 
   buildRequests: (bidRequests, bidderRequest) => {
+    // convert Native ORTB definition to old-style prebid native definition
+    bidRequests = convertOrtbRequestToProprietaryNative(bidRequests);
+
     const currencyObj = config.getConfig('currency');
     const currency = (currencyObj && currencyObj.adServerCurrency) || 'USD';
 

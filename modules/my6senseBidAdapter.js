@@ -1,4 +1,5 @@
 import { BANNER, NATIVE } from '../src/mediaTypes.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const {registerBidder} = require('../src/adapters/bidderFactory.js');
 const BIDDER_CODE = 'my6sense';
@@ -118,6 +119,9 @@ function buildGdprServerProperty(bidderRequest) {
 }
 
 function buildRequests(validBidRequests, bidderRequest) {
+  // convert Native ORTB definition to old-style prebid native definition
+  validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
+
   let requests = [];
 
   if (validBidRequests && validBidRequests.length) {

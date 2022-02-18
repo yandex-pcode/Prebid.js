@@ -3,6 +3,7 @@ import { registerBidder } from '../src/adapters/bidderFactory.js';
 import { config } from '../src/config.js';
 import { BANNER, NATIVE, VIDEO } from '../src/mediaTypes.js';
 import { createEidsArray } from './userId/eids.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const BIDDER_CODE = 'sortable';
 const SERVER_URL = 'https://c.deployads.com';
@@ -168,6 +169,9 @@ export const spec = {
   },
 
   buildRequests: function(validBidReqs, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    validBidReqs = convertOrtbRequestToProprietaryNative(validBidReqs);
+
     const sortableConfig = config.getConfig('sortable') || {};
     const globalSiteId = sortableConfig.siteId;
     let loc = parseUrl(bidderRequest.refererInfo.referer);

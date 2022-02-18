@@ -10,6 +10,7 @@ import {
 import { mergeDeep, _map, deepAccess, parseSizesInput, deepSetValue } from '../src/utils.js';
 import { config } from '../src/config.js';
 import { Renderer } from '../src/Renderer.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const { getConfig } = config;
 
@@ -64,6 +65,9 @@ export const spec = {
     return !!(mid || (inv && mname));
   },
   buildRequests: (validBidRequests, bidderRequest) => {
+    // convert Native ORTB definition to old-style prebid native definition
+    validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
+
     let app, site;
 
     const commonFpd = getConfig('ortb2') || {};

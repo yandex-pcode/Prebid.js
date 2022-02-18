@@ -4,6 +4,7 @@ import { config } from '../src/config.js';
 import { createEidsArray } from './userId/eids.js';
 import find from 'core-js-pure/features/array/find.js';
 import {BANNER, NATIVE, VIDEO} from '../src/mediaTypes.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const VERSION = '1.0';
 const BIDDER_CODE = 'adyoulike';
@@ -61,6 +62,9 @@ export const spec = {
    * @return ServerRequest Info describing the request to the server.
    */
   buildRequests: function (bidRequests, bidderRequest) {
+    // convert Native ORTB definition to old-style prebid native definition
+    bidRequests = convertOrtbRequestToProprietaryNative(bidRequests);
+
     const payload = {
       Version: VERSION,
       Bids: bidRequests.reduce((accumulator, bidReq) => {

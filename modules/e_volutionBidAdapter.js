@@ -1,6 +1,7 @@
 import { registerBidder } from '../src/adapters/bidderFactory.js';
 import { BANNER, NATIVE, VIDEO } from '../src/mediaTypes.js';
 import { isFn, deepAccess, logMessage } from '../src/utils.js';
+import { convertOrtbRequestToProprietaryNative } from '../src/native.js';
 
 const BIDDER_CODE = 'e_volution';
 const AD_URL = 'https://service.e-volution.ai/?c=o&m=multi';
@@ -51,6 +52,9 @@ export const spec = {
   },
 
   buildRequests: (validBidRequests = [], bidderRequest) => {
+    // convert Native ORTB definition to old-style prebid native definition
+    validBidRequests = convertOrtbRequestToProprietaryNative(validBidRequests);
+
     let winTop = window;
     let location;
     try {
