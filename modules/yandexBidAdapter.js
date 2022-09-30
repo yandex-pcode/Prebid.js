@@ -1,5 +1,6 @@
-import { formatQS, deepAccess, triggerPixel } from '../src/utils.js';
+import {formatQS, deepAccess, triggerPixel, isArray, isNumber} from '../src/utils.js';
 import { registerBidder } from '../src/adapters/bidderFactory.js';
+import { BANNER } from '../src/mediaTypes.js'
 
 const BIDDER_CODE = 'yandex';
 const BIDDER_URL = 'https://bs.yandex.ru/metadsp';
@@ -10,9 +11,17 @@ const SSP_ID = 10500;
 export const spec = {
   code: BIDDER_CODE,
   aliases: ['ya'], // short code
+  supportedMediaTypes: [ BANNER ],
 
   isBidRequestValid: function(bid) {
-    return !!(bid.params && bid.params.pageId && bid.params.impId);
+    if (!(bid.params && bid.params.pageId && bid.params.impId)) {
+      return false;
+    }
+    const sizes = bid.mediaTypes?.banner?.sizes;
+    if (!(isArray(sizes) && isArray(sizes[0]) && isNumber(sizes[0][0]) && isNumber(sizes[0][1]))) {
+      return false;
+    }
+    return true;
   },
 
   buildRequests: function(validBidRequests, bidderRequest) {
@@ -32,6 +41,9 @@ export const spec = {
     return validBidRequests.map((bidRequest) => {
       const { params } = bidRequest;
       const { pageId, impId, targetRef, withCredentials = true } = params;
+      const sizes = bidRequest.mediaTypes.banner.sizes;
+      const size = sizes[0];
+      const [ w, h ] = size;
 
       const queryParams = {
         'imp-id': impId,
@@ -43,24 +55,22 @@ export const spec = {
         queryParams['tcf-consent'] = consentString;
       }
 
-      const floorInfo = bidRequest.getFloor ? bidRequest.getFloor({
-        currency: DEFAULT_CURRENCY
-      }) : {};
-      const bidfloor = floorInfo.floor;
-      const bidfloorcur = floorInfo.currency;
-
       const imp = {
         id: impId,
-        bidfloor,
-        bidfloorcur,
-      };
-      const bannerParams = deepAccess(bidRequest, 'mediaTypes.banner');
-      if (bannerParams) {
-        const [ w, h ] = bannerParams.sizes[0];
-        imp.banner = {
+        banner: {
           w,
           h,
-        };
+        }
+      };
+
+      if (bidRequest.getFloor) {
+        const floorInfo = bidRequest.getFloor({
+          currency: DEFAULT_CURRENCY,
+          size
+        });
+
+        imp.bidfloor = floorInfo.floor;
+        imp.bidfloorcur = floorInfo.currency;
       }
 
       const queryParamsString = formatQS(queryParams);

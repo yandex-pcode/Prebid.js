@@ -11,6 +11,13 @@ describe('Yandex adapter', function () {
         pageId: 123,
         impId: 1,
       },
+      mediaTypes: {
+        banner: {
+          sizes: [
+            [300, 250],
+          ],
+        },
+      },
     };
   }
 
@@ -19,14 +26,6 @@ describe('Yandex adapter', function () {
       ...getBidConfig(),
       bidId: 'bidid-1',
       adUnitCode: 'adUnit-123',
-      mediaTypes: {
-        banner: {
-          sizes: [
-            [300, 250],
-            [300, 600]
-          ],
-        },
-      },
     };
   }
 
