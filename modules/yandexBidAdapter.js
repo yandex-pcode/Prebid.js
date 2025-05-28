@@ -47,7 +47,7 @@ import { _each, _map, deepAccess, deepSetValue, formatQS, triggerPixel, logInfo 
  */
 
 const BIDDER_CODE = 'yandex';
-const BIDDER_URL = 'https://bs.yandex.ru/prebid';
+const BIDDER_URL = 'https://yandex.ru/ads/prebid';
 const DEFAULT_TTL = 180;
 const DEFAULT_CURRENCY = 'EUR';
 /**
